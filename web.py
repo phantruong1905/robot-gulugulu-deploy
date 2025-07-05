@@ -41,14 +41,10 @@ st.markdown("<hr style='margin-top: 0;'>", unsafe_allow_html=True)
 if search_symbol:
     st.session_state['selected_symbol'] = search_symbol.upper()
 
-
-
-# DB engine
 creds = st.secrets["database"]
 engine = create_engine(
     f"postgresql+psycopg2://{creds['user']}:{creds['password']}@{creds['host']}:{creds['port']}/{creds['database']}"
 )
-
 
 
 class Config:
@@ -220,7 +216,6 @@ def handle_symbol_click(symbol):
             st.exception(e)
 
 
-
 def main():
     df = load_latest_buys()
     buy_df = df[df['action'].str.lower() == 'buy'][['symbol', 'date', 'price', 'signal_strength']]
@@ -231,24 +226,24 @@ def main():
 
     if not buy_df.empty:
 
-        # 💡 Put the buttons in their own container so layout doesn’t mess with the rest
+        # 💡 Put the buttons in their own container so layout doesn't mess with the rest
         with st.container():
             col1, col2, col3, col4 = st.columns([1, 2, 2, 2])
             with col1:
                 st.markdown(
-                    "<div style='background-color:rgba(0, 255, 100, 0.2);padding:10px;border-radius:5px;color:white;font-weight:bold;text-align:left'>Symbol</div>",
+                    "<div style='background-color:rgba(44, 62, 80, 0.8);padding:10px;border-radius:5px;color:white;font-weight:bold;text-align:center'>Symbol</div>",
                     unsafe_allow_html=True)
             with col2:
                 st.markdown(
-                    "<div style='background-color:rgba(0, 255, 100, 0.2);padding:10px;border-radius:5px;color:white;font-weight:bold;text-align:left'>Date</div>",
+                    "<div style='background-color:rgba(44, 62, 80, 0.8);padding:10px;border-radius:5px;color:white;font-weight:bold;text-align:center'>Date</div>",
                     unsafe_allow_html=True)
             with col3:
                 st.markdown(
-                    "<div style='background-color:rgba(0, 255, 100, 0.2);padding:10px;border-radius:5px;color:white;font-weight:bold;text-align:left'>Price</div>",
+                    "<div style='background-color:rgba(44, 62, 80, 0.8);padding:10px;border-radius:5px;color:white;font-weight:bold;text-align:center'>Price</div>",
                     unsafe_allow_html=True)
             with col4:
                 st.markdown(
-                    "<div style='background-color:rgba(0, 255, 100, 0.2);padding:10px;border-radius:5px;color:white;font-weight:bold;text-align:left'>Signal Strength</div>",
+                    "<div style='background-color:rgba(44, 62, 80, 0.8);padding:10px;border-radius:5px;color:white;font-weight:bold;text-align:center'>Signal Strength</div>",
                     unsafe_allow_html=True)
 
             st.divider()
@@ -258,9 +253,36 @@ def main():
                 with col1:
                     if st.button(row['symbol'], key=f"btn_{row['symbol']}_{index}"):
                         st.session_state['selected_symbol'] = row['symbol']
-                with col2: st.write(str(row['date']))
-                with col3: st.write(f"${row['price']:.2f}")
-                with col4: st.write(f"{row['signal_strength']:.4f}")
+
+                with col2:
+                    st.markdown(f"<div style='text-align:center'>{str(row['date'])}</div>", unsafe_allow_html=True)
+
+                with col3:
+                    st.markdown(f"<div style='text-align:center'>${row['price']:.2f}</div>", unsafe_allow_html=True)
+
+                with col4:
+                    strength = row['signal_strength']
+                    if strength >= 0.07:
+                        bg = "rgba(255, 75, 75, 0.6)"  # red with brighter transparency
+                    elif strength >= 0.06:
+                        bg = "rgba(168, 0, 255, 0.6)"  # purple with brighter transparency
+                    elif strength >= 0.05:
+                        bg = "rgba(11, 156, 49, 0.6)"  # green with brighter transparency
+                    elif strength >= 0.04:
+                        bg = "rgba(170, 170, 170, 0.6)"  # yellow with brighter transparency
+                    else:
+                        bg = "rgba(170, 170, 170, 0.6)"  # gray with brighter transparency
+
+                    st.markdown(
+                        f"""
+                        <div style="background-color:{bg};color:white;padding:6px 12px;
+                                    border-radius:8px;text-align:center;font-weight:bold;">
+                            {strength:.4f}
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
+
                 st.divider()
 
         # 🧠 Trigger the symbol selection
