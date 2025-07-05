@@ -26,8 +26,11 @@ st.markdown(
 
 
 # DB engine
+creds = st.secrets["database"]
 engine = create_engine(
-    "postgresql+psycopg2://phantronbeo:Truong15397298@gulugulu-db.c9i0iiackcds.ap-southeast-2.rds.amazonaws.com/postgres")
+    f"postgresql+psycopg2://{creds['user']}:{creds['password']}@{creds['host']}:{creds['port']}/{creds['database']}"
+)
+
 
 
 class Config:
@@ -204,6 +207,12 @@ def main():
     df = load_latest_buys()
     buy_df = df[df['action'].str.lower() == 'buy'][['symbol', 'date', 'price', 'signal_strength']]
     buy_df = buy_df.sort_values(by='date', ascending=False)
+
+    # 🧠 Search bar
+    search_symbol = st.text_input("🔍 Tìm mã cổ phiếu", key="search_box")
+
+    if search_symbol:
+        st.session_state['selected_symbol'] = search_symbol.upper()
 
     if not buy_df.empty:
 
