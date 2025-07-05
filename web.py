@@ -25,7 +25,7 @@ with col_left:
             margin-top: -25px;
             margin-bottom: 0;
             padding-left: 5px;
-        '>🤖 Robot Gulugulu</h1>
+        '>🤖 Robot Gulugulu v1.0</h1>
         """,
         unsafe_allow_html=True
     )
@@ -258,7 +258,7 @@ def main():
                     st.markdown(f"<div style='text-align:center'>{str(row['date'])}</div>", unsafe_allow_html=True)
 
                 with col3:
-                    st.markdown(f"<div style='text-align:center'>${row['price']:.2f}</div>", unsafe_allow_html=True)
+                    st.markdown(f"<div style='text-align:center'>{row['price']:.2f}</div>", unsafe_allow_html=True)
 
                 with col4:
                     strength = row['signal_strength']
