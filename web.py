@@ -15,14 +15,32 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 # Page config
 st.set_page_config(page_title="Gulugulu Rô Bốt", layout="wide")
 
-# Styling
-st.markdown(
-    """
-    <h1 style='text-align: left; color: #FF4B4B; margin-bottom: 0;'>🤖 Robot Gulugulu</h1>
-    <hr style='margin-top: 0;'>
-    """,
-    unsafe_allow_html=True
-)
+# Header and search bar on the same row
+col_left, col_right = st.columns([6, 2])
+with col_left:
+    st.markdown(
+        """
+        <h1 style='
+            color: #FF4B4B;
+            margin-top: -25px;
+            margin-bottom: 0;
+            padding-left: 5px;
+        '>🤖 Robot Gulugulu</h1>
+        """,
+        unsafe_allow_html=True
+    )
+
+with col_right:
+    search_symbol = st.text_input("🔍", key="search_box", label_visibility="collapsed",
+                                  placeholder="Tìm kiếm mã cổ phiếu")
+
+# Divider under both
+st.markdown("<hr style='margin-top: 0;'>", unsafe_allow_html=True)
+
+# Trigger logic
+if search_symbol:
+    st.session_state['selected_symbol'] = search_symbol.upper()
+
 
 
 # DB engine
@@ -207,9 +225,6 @@ def main():
     df = load_latest_buys()
     buy_df = df[df['action'].str.lower() == 'buy'][['symbol', 'date', 'price', 'signal_strength']]
     buy_df = buy_df.sort_values(by='date', ascending=False)
-
-    # 🧠 Search bar
-    search_symbol = st.text_input("🔍 Tìm mã cổ phiếu", key="search_box")
 
     if search_symbol:
         st.session_state['selected_symbol'] = search_symbol.upper()
