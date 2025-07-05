@@ -31,7 +31,7 @@ with col_left:
     )
 
 with col_right:
-    search_symbol = st.text_input("🔍", key="search_box", label_visibility="collapsed",
+    search_symbol = st.text_inpgut("🔍", key="search_box", label_visibility="collapsed",
                                   placeholder="Tìm kiếm mã cổ phiếu")
 
 # Divider under both
